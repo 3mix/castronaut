@@ -2,11 +2,11 @@ module Castronaut
   module Adapters
     
     def self.selected_adapter
-      case Castronaut.config.cas_adapter['adapter']
-        when "development" : Castronaut::Adapters::Development::Adapter
-        when "ldap" : Castronaut::Adapters::Ldap::Adapter
-        when "database" : Castronaut::Adapters::RestfulAuthentication::Adapter
+      adapter_name = Castronaut.config.cas_adapter['adapter']
+      %w{adapter user}.each do |type|
+        require File.join('castronaut', 'adapters', adapter_name, type)
       end
+      "Castronaut::Adapters::#{adapter_name.classify}::Adapter".constantize
     end
     
   end
