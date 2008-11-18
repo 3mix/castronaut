@@ -22,7 +22,7 @@ OptionParser.new do |opts|
 end.parse!
 
 unless Castronaut.config
-  $stderr.puts "No configuration file specified.  Deafaulting to ./config/castronaut.yml"
+  $stderr.puts "No configuration file specified.  Defaulting to ./config/castronaut.yml"
   default_config = File.expand_path("./config/castronaut.yml")
 
   if File.exist?(default_config)
