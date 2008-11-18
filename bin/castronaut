@@ -8,7 +8,6 @@ require 'rack'
 require 'sinatra'
 require 'optparse'
 
-options = {}
 OptionParser.new do |opts|
   opts.banner = "Usage: castronaut -C /path/to/config/file"
 
@@ -17,14 +16,12 @@ OptionParser.new do |opts|
     exit(1)
   end
 
-  opts.on("-C", "--config", "Config File") do |c|
-    options[:config_file] = ARGV[0]
+  opts.on("-C", "--config FILE", "Config File") do |c|
+    Castronaut.config = Castronaut::Configuration.load c
   end
 end.parse!
 
-if options[:config_file]
-  Castronaut.config = Castronaut::Configuration.load(options[:config_file])
-else
+unless Castronaut.config
   $stderr.puts "No configuration file specified.  Deafaulting to ./config/castronaut.yml"
   default_config = File.expand_path("./config/castronaut.yml")
 
