@@ -67,8 +67,6 @@ module Castronaut
     end
 
     def connect_activerecord
-      create_directory('db')
-
       ActiveRecord::Base.logger = logger
       ActiveRecord::Base.colorize_logging = false
 
@@ -78,6 +76,9 @@ module Castronaut
 
     def connect_cas_to_activerecord
       logger.info "#{self.class} - Connecting to cas database using #{cas_database.inspect}"
+      if cas_database['adapter'] == 'sqlite3'
+        create_directory File.dirname(cas_database['database'])
+      end
       ActiveRecord::Base.establish_connection(cas_database)
 
       migration_path = File.expand_path(File.join(File.dirname(__FILE__), 'db'))
