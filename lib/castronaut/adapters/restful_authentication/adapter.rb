@@ -1,11 +1,17 @@
+require 'castronaut/adapters/active_record_adapter'
+
 module Castronaut
   module Adapters
     module RestfulAuthentication
       
-      class Adapter
+      class Adapter < Castronaut::Adapters::Base
+        
+        def self.user_class
+          Castronaut::Adapters::RestfulAuthentication::User
+        end
       
         def self.authenticate(username, password)
-          Castronaut::Adapters::RestfulAuthentication::User.authenticate(username, password)
+          self.user_class.authenticate(username, password)
         end
       
       end

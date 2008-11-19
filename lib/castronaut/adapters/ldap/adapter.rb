@@ -2,7 +2,7 @@
   module Adapters
     module Ldap
       
-      class Adapter
+      class Adapter < Castronaut::Adapters::Base
       
         def self.authenticate(username, password)
           Castronaut::Adapters::Ldap::User.authenticate(username, password)

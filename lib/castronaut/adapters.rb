@@ -9,5 +9,9 @@ module Castronaut
       "Castronaut::Adapters::#{adapter_name.classify}::Adapter".constantize
     end
     
+    class Base
+      def self.configure options; end
+    end
+    
   end
 end

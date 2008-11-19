@@ -22,7 +22,8 @@ module Castronaut
       config.parse_config_into_settings(config.config_hash)
       config.logger = config.setup_logger
       config.debug_initialize if config.logger.debug?
-      config.connect_activerecord 
+      config.connect_activerecord
+      config.configure_adapter
       config
     end
 
@@ -71,7 +72,6 @@ module Castronaut
       ActiveRecord::Base.colorize_logging = false
 
       connect_cas_to_activerecord
-      connect_adapter_to_activerecord if cas_adapter.has_key?('database')
     end
 
     def connect_cas_to_activerecord
@@ -87,17 +87,8 @@ module Castronaut
       ActiveRecord::Migrator.migrate(migration_path, ENV["VERSION"] ? ENV["VERSION"].to_i : nil)
     end
 
-    def connect_adapter_to_activerecord
-      logger.info "#{self.class} - Connecting to cas adapter database using #{cas_adapter['database'].inspect}"
-      Castronaut::Adapters::RestfulAuthentication::User.establish_connection(cas_adapter['database'])
-      Castronaut::Adapters::RestfulAuthentication::User.logger = logger
-
-      unless ENV["test"] == "true"
-        if Castronaut::Adapters::RestfulAuthentication::User.connection.tables.empty?
-          STDERR.puts "#{self.class} - There are no tables in the given database.\nConfig details:\n#{config_hash.inspect}"
-          Kernel.exit(0)
-        end
-      end
+    def configure_adapter
+      Castronaut::Adapters.selected_adapter.configure({'logger' => logger}.merge(cas_adapter))
     end
   end
 

@@ -1,7 +1,7 @@
 module Castronaut
   module Adapters
     module Development
-      class Adapter
+      class Adapter < Castronaut::Adapters::Base
       
         def self.authenticate(username, password)
           Castronaut::Adapters::Development::User.authenticate(username, password)
