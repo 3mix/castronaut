@@ -88,7 +88,7 @@ module Castronaut
     end
 
     def configure_adapter
-      Castronaut::Adapters.selected_adapter.configure({'logger' => logger}.merge(cas_adapter))
+      Castronaut::Adapters.selected_adapter(cas_adapter['adapter']).configure({'logger' => logger}.merge(cas_adapter))
     end
   end
 
