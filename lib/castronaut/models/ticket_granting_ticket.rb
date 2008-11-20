@@ -8,7 +8,7 @@ module Castronaut
       has_many :service_tickets, :dependent => :destroy
 
       before_validation :dispense_ticket, :if => :new_record?
-      validates_presence_of :ticket, :username
+      validates_presence_of :ticket, :identifier
 
       def self.validate_cookie(ticket_cookie)
         Castronaut.logger.debug("#{self} - Validating ticket for #{ticket_cookie}")
@@ -18,7 +18,7 @@ module Castronaut
         ticket_granting_ticket = find_by_ticket(ticket_cookie)
 
         if ticket_granting_ticket
-          Castronaut.logger.debug("#{self} -[#{ticket_cookie}] for [#{ticket_granting_ticket.username}] successfully validated.")
+          Castronaut.logger.debug("#{self} -[#{ticket_cookie}] for [#{ticket_granting_ticket.identifier}] successfully validated.")
           return Castronaut::TicketResult.new(ticket_granting_ticket, "Your session has expired. Please log in again.", 'warn') if ticket_granting_ticket.expired?
         else
           Castronaut.logger.debug("#{self} - [#{ticket_cookie}] was not found in the database.")
@@ -27,8 +27,8 @@ module Castronaut
         Castronaut::TicketResult.new(ticket_granting_ticket)
       end
 
-      def self.generate_for(username, client_host)
-        create! :username => username, :client_hostname => client_host
+      def self.generate_for(identifier, client_host)
+        create! :identifier => identifier, :client_hostname => client_host
       end
       
       def ticket_prefix

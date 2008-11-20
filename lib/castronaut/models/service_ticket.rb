@@ -14,11 +14,11 @@ module Castronaut
       has_many :proxy_granting_tickets, :dependent => :destroy
 
       before_validation :dispense_ticket, :if => :new_record?
-      validates_presence_of :ticket, :client_hostname, :service, :username, :ticket_granting_ticket
+      validates_presence_of :ticket, :client_hostname, :service, :identifier, :ticket_granting_ticket
 
       def self.generate_ticket_for(service, client_host, ticket_granting_ticket)
         create! :service => service,
-                :username => ticket_granting_ticket.username,
+                :identifier => ticket_granting_ticket.identifier,
                 :client_hostname => client_host,
                 :ticket_granting_ticket => ticket_granting_ticket
       end
@@ -41,7 +41,7 @@ module Castronaut
 
         return Castronaut::TicketResult.new(service_ticket, "Ticket '#{ticket}' has expired.", "INVALID_TICKET") if service_ticket.expired?
 
-        mismatched_service_message = "The ticket '#{ticket}' belonging to user '#{service_ticket.username}' is valid, but the requested service '#{service}' does not match the service '#{service_ticket.service}' associated with this ticket."
+        mismatched_service_message = "The ticket '#{ticket}' belonging to user '#{service_ticket.identifier}' is valid, but the requested service '#{service}' does not match the service '#{service_ticket.service}' associated with this ticket."
 
         return Castronaut::TicketResult.new(service_ticket, mismatched_service_message, "INVALID_SERVICE") unless service_ticket.matches_service?(service)
 
