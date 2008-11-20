@@ -96,44 +96,10 @@ task :flog do
   exit(0)
 end
 
-
-GEMSPEC = 'castronaut.gemspec'
-
 desc 'Build and install the gem'
 task :gem do
-  sh "gem build #{GEMSPEC}"
+  sh 'gem build castronaut.gemspec'
   sh 'sudo gem install castronaut*.gem'
 end
 
 task :default => [:verify_coverage]#, :flog]
-
-
-rule '.gemspec' => '.gemspec.source' do |t|
-
-  files = ["MIT-LICENSE", "Rakefile", "README.textile", "castronaut.rb", "bin/castronaut"]
-  files << Dir["lib/**/*", "app/**/*", "spec/**/*", "config/**/*",  "vendor/**/*"]
-
-  constants = {'FILES' => files}
-  
-  File.open t.name, 'w' do |target|
-    target.print <<END
-# This file is generated! Don't modify it by hand!
-# Instead, edit the .gemspec.source file, and run:
-#   rake gemspec
-# Or just run
-#   rake gem
-# to build the gemspec and the gem together.
-END
-    target.puts; target.puts
-    constants.each_pair do |k,v|
-      target.puts "#{k} = #{v.inspect}"
-    end
-    File.open t.source do |source|
-      while (line = source.gets)
-        target.puts line
-      end
-    end
-  end
-end
-
-task :gemspec => GEMSPEC
