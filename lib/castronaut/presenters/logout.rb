@@ -37,7 +37,7 @@ module Castronaut
         controller.delete_cookie('tgt')
 
         if ticket_granting_ticket
-          Castronaut::Models::ProxyGrantingTicket.clean_up_proxy_granting_tickets_for(ticket_granting_ticket.username)
+          Castronaut::Models::ProxyGrantingTicket.clean_up_proxy_granting_tickets_for(ticket_granting_ticket.identifier)
           ticket_granting_ticket.destroy
         end
         
