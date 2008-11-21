@@ -3,8 +3,8 @@ files << Dir["lib/**/*", "app/**/*", "spec/**/*", "config/**/*",  "vendor/**/*"]
 
 Gem::Specification.new do |s|
   s.name = 'castronaut'
-  s.version = "0.4.4.5"
-  s.date = "2008-11-20"
+  s.version = "0.5.0"
+  s.date = "2008-11-21"
   s.summary = 'CAS Server'
   s.description = "CAS Server"
   s.files = files.flatten
