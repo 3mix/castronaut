@@ -4,7 +4,7 @@ module Castronaut
     InvalidMessageCategories = %w{warn error fatal invalid} 
 
     attr_reader :ticket, :message, :message_category
-    delegate :identifier, :proxies, :to => :ticket
+    delegate :identifier, :extra_info, :extra_xml, :proxies, :to => :ticket
         
     def initialize(ticket, message=nil, message_category=nil)
       @ticket = ticket

@@ -11,14 +11,14 @@ module Castronaut
       MissingMessage = "Ticket or service parameter was missing in the request."
 
       belongs_to :ticket_granting_ticket
+      delegate :identifier, :extra_info, :extra_xml, :to => :ticket_granting_ticket
       has_many :proxy_granting_tickets, :dependent => :destroy
 
       before_validation :dispense_ticket, :if => :new_record?
-      validates_presence_of :ticket, :client_hostname, :service, :identifier, :ticket_granting_ticket
+      validates_presence_of :ticket, :client_hostname, :service, :ticket_granting_ticket
 
       def self.generate_ticket_for(service, client_host, ticket_granting_ticket)
         create! :service => service,
-                :identifier => ticket_granting_ticket.identifier,
                 :client_hostname => client_host,
                 :ticket_granting_ticket => ticket_granting_ticket
       end

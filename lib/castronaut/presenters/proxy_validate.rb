@@ -43,6 +43,9 @@ module Castronaut
       def identifier
         @proxy_ticket_result.identifier
       end
+      def extra_xml
+        @proxy_ticket_result.extra_xml
+      end
 
       def client_host
         env['HTTP_X_FORWARDED_FOR'] || env['REMOTE_HOST'] || env['REMOTE_ADDR']

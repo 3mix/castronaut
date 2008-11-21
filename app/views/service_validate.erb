@@ -5,6 +5,10 @@
     <% if presenter.proxy_granting_ticket_iou %>
     <cas:proxyGrantingTicket><%= presenter.proxy_granting_ticket_iou.to_s.to_xs %></cas:proxyGrantingTicket>
     <% end %>
+    
+    <% unless presenter.extra_xml.blank? %>
+      <%= presenter.extra_xml %>
+    <% end %>
   </cas:authenticationSuccess>
 <% else %>
   <cas:authenticationFailure code="<%= presenter.service_ticket_result.message_category %>">

@@ -4,7 +4,7 @@ module Castronaut
     class ServiceValidate
       MissingCredentialsMessage = "Please supply a username and password to login."
 
-      attr_reader :controller, :your_mission, :identifier
+      attr_reader :controller, :your_mission
       attr_accessor :messages, :login_ticket
 
       delegate :params, :request, :to => :controller
@@ -36,8 +36,11 @@ module Castronaut
         @proxy_granting_ticket_result && @proxy_granting_ticket_result.iou
       end
 
-      def username
-        @service_ticket_result.username
+      def identifier
+        @service_ticket_result.identifier
+      end
+      def extra_xml
+        @service_ticket_result.extra_xml
       end
 
       def client_host

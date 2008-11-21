@@ -116,7 +116,7 @@ module Castronaut
           
           @identifier = authentication_result.identifier
 
-          ticket_granting_ticket = Castronaut::Models::TicketGrantingTicket.generate_for(authentication_result.identifier, client_host)
+          ticket_granting_ticket = Castronaut::Models::TicketGrantingTicket.generate_for(authentication_result, client_host)
           controller.set_cookie "tgt", ticket_granting_ticket.to_cookie
           if service.blank?
             messages << "You have successfully logged in."

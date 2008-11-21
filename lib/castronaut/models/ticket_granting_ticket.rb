@@ -27,8 +27,8 @@ module Castronaut
         Castronaut::TicketResult.new(ticket_granting_ticket)
       end
 
-      def self.generate_for(identifier, client_host)
-        create! :identifier => identifier, :client_hostname => client_host
+      def self.generate_for(result, client_host)
+        create! :identifier => result.identifier, :client_hostname => client_host, :extra_info => result.extra_info
       end
       
       def ticket_prefix
@@ -44,6 +44,20 @@ module Castronaut
 
       def expired? 
         false
+      end
+      
+      
+      # Serialized
+      def extra_info
+        value = self[:extra_info]
+        value.nil? ? nil : YAML.load(value)
+      end
+      def extra_info= value
+        self[:extra_info] = value.nil? ? nil : value.to_yaml
+      end
+      
+      def extra_xml
+        self.extra_info.to_xml :skip_instruct => true, :root => 'extra_info'
       end
 
     end

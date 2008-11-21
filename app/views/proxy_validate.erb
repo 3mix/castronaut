@@ -12,6 +12,10 @@
     <% end %>
     </cas:proxies>
     <% end %>
+    
+    <% unless presenter.extra_xml.blank? %>
+      <%= presenter.extra_xml %>
+    <% end %>
   </cas:authenticationSuccess>
 <% else %>
   <cas:authenticationFailure code="<%= presenter.proxy_ticket_result.message_category %>">
