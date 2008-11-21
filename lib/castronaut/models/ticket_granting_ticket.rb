@@ -57,7 +57,11 @@ module Castronaut
       end
       
       def extra_xml
-        self.extra_info.to_xml :skip_instruct => true, :root => 'extra_info'
+        if self.extra_info.blank?
+          nil
+        else
+          self.extra_info.to_xml :skip_instruct => true, :root => 'extra_info'
+        end
       end
 
     end
