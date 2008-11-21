@@ -45,8 +45,7 @@ module Castronaut
       end
       
       def self.clean_up_proxy_granting_tickets_for(identifier)
-        proxy_granting_tickets = all(:include => :service_ticket, :conditions => ["service_tickets.identifier = ?", identifier])
-        proxy_granting_tickets.each { |pgt| pgt.destroy }
+        ServiceTicket.identified_by(identifier).map(&:proxy_granting_tickets).flatten.uniq.each(&:destroy)
         nil
       end
 

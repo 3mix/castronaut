@@ -16,6 +16,15 @@ module Castronaut
 
       before_validation :dispense_ticket, :if => :new_record?
       validates_presence_of :ticket, :client_hostname, :service, :ticket_granting_ticket
+      
+      
+      named_scope :identified_by do |identifier|
+        {
+          :include => :ticket_granting_ticket,
+          :conditions => ['ticket_granting_tickets.identifier = ?', identifier],
+        }
+      end
+      
 
       def self.generate_ticket_for(service, client_host, ticket_granting_ticket)
         create! :service => service,
