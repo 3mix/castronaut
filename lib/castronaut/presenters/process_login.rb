@@ -7,7 +7,7 @@ module Castronaut
     class ProcessLogin
       MissingCredentialsMessage = "Please supply a username and password to login."
 
-      attr_reader :controller, :your_mission
+      attr_reader :controller, :your_mission, :identifier
       attr_accessor :messages, :login_ticket
 
       delegate :params, :request, :to => :controller
@@ -102,6 +102,8 @@ module Castronaut
 
         if authentication_result.valid?
           fire_authentication_success_notice('username' => username, 'client_host' => client_host, 'service' => service)
+          
+          @identifier = authentication_result.identifier
 
           ticket_granting_ticket = Castronaut::Models::TicketGrantingTicket.generate_for(authentication_result.identifier, client_host)
           controller.set_cookie "tgt", ticket_granting_ticket.to_cookie
