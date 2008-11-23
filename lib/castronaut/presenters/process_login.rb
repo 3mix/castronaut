@@ -95,12 +95,12 @@ module Castronaut
           
           @identifier = authentication_result.identifier
 
-          ticket_granting_ticket = Castronaut::Models::TicketGrantingTicket.generate_for(authentication_result, client_host)
-          controller.set_cookie "tgt", ticket_granting_ticket.to_cookie
+          @ticket_granting_ticket = Castronaut::Models::TicketGrantingTicket.generate_for(authentication_result, client_host)
+          controller.set_cookie "tgt", @ticket_granting_ticket.to_cookie
           if service.blank?
             messages << "You have successfully logged in."
           else
-            service_ticket = Castronaut::Models::ServiceTicket.generate_ticket_for(service, client_host, ticket_granting_ticket)
+            service_ticket = Castronaut::Models::ServiceTicket.generate_ticket_for(service, client_host, @ticket_granting_ticket)
 
             if service_ticket && service_ticket.service_uri
               @your_mission = { :redirect => service_ticket.service_uri, :status => 303 }

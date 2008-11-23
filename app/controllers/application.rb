@@ -1,10 +1,16 @@
+if (initializers = Castronaut.config.initializers) && !initializers.empty?
+  initializers.each { |i| load i }
+end
+
 def presents(klass, template_type=Castronaut.config.template_type)
+  @page_title ||= 'Sign In'
   @presenter = klass.new(self)
   @presenter.represent!
-  if @presenter.your_mission[:redirect]
-    redirect @presenter.your_mission[:redirect], @presenter.your_mission[:status]
-  elsif @presenter.your_mission[:template]
-    send template_type, @presenter.your_mission[:template]
+  mission = @presenter.your_mission
+  if mission[:redirect]
+    redirect mission[:redirect], mission[:status]
+  elsif mission[:template]
+    send template_type, mission[:template], :layout => mission[:layout].nil? ? :layout : mission[:layout]
   end
 end
 
@@ -19,6 +25,10 @@ end
 
 post '/login' do
   presents Castronaut::Presenters::ProcessLogin
+end
+
+get '/logout' do
+  presents Castronaut::Presenters::Logout
 end
 
 get '/serviceValidate' do

@@ -12,6 +12,10 @@ ssl_enabled: false
 
 template_type: erb
 
+# These will be run in the Sinatra controller before any actions are defined
+initializers:
+  - /path/to/a/ruby/file.rb
+
 cas_database:
   adapter: sqlite3
   database: db/cas.db

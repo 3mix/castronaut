@@ -21,10 +21,10 @@ module Castronaut
       end
 
       def represent!
-        ticket_granting_ticket_result = Castronaut::Models::TicketGrantingTicket.validate_cookie(ticket_generating_ticket_cookie)
+        @ticket_granting_ticket = Castronaut::Models::TicketGrantingTicket.validate_cookie(ticket_generating_ticket_cookie)
 
-        if ticket_granting_ticket_result.valid?
-          messages << "You are currently logged in as #{ticket_granting_ticket_result.identifier}.  If this is not you, please log in below."
+        if @ticket_granting_ticket.valid?
+          messages << "You are currently logged in as #{@ticket_granting_ticket.identifier}.  If this is not you, please log in below."
         end
 
         if redirection_loop?
@@ -32,8 +32,8 @@ module Castronaut
         else
 
           if service
-            if !renewal && ticket_granting_ticket_result.valid?
-              service_ticket = Castronaut::Models::ServiceTicket.generate_ticket_for(service, client_host, ticket_granting_ticket_result.ticket)
+            if !renewal && @ticket_granting_ticket.valid?
+              service_ticket = Castronaut::Models::ServiceTicket.generate_ticket_for(service, client_host, @ticket_granting_ticket.ticket)
             
               if service_ticket.service_uri
                 @your_mission = { :redirect => service_ticket.service_uri, :status => 303 }
