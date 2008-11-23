@@ -1,32 +1,11 @@
 module Castronaut
   module Presenters
 
-    class ProxyValidate
+    class ProxyValidate < Base
       MissingCredentialsMessage = "Please supply a username and password to login."
 
-      attr_reader :controller, :your_mission, :proxy_ticket_result, :proxies
-      attr_accessor :messages, :login_ticket
-
-      delegate :params, :request, :to => :controller
-      delegate :cookies, :env, :to => :request
-
-      def initialize(controller)
-        @controller = controller
-        @messages = []
-        @your_mission = nil
-      end
-
-      def service
-        params['service']
-      end
-
-      def renewal
-        params['renew']
-      end
-
-      def ticket
-        params['ticket']
-      end
+      attr_reader :proxy_ticket_result, :proxies
+      attr_accessor :login_ticket
 
       def proxy_granting_ticket_url
         params['pgtUrl']
@@ -47,10 +26,6 @@ module Castronaut
         @proxy_ticket_result.extra_xml
       end
 
-      def client_host
-        env['HTTP_X_FORWARDED_FOR'] || env['REMOTE_HOST'] || env['REMOTE_ADDR']
-      end
-
       def represent!
         @proxy_ticket_result = Castronaut::Models::ProxyTicket.validate_ticket(service, ticket)
 
@@ -62,7 +37,7 @@ module Castronaut
           end
         end
 
-        @your_mission = lambda { controller.erb :proxy_validate, :layout => false, :locals => { :presenter => self } }
+        @your_mission = { :template => :proxy_validate, :layout => false }
 
         self
       end

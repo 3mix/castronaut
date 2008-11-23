@@ -1,29 +1,13 @@
 module Castronaut
   module Presenters
 
-    class Logout
-      attr_reader :controller, :your_mission
-      attr_accessor :messages
-
-      delegate :params, :request, :to => :controller
-      delegate :cookies, :env, :to => :request
-
-      def initialize(controller)
-        @controller = controller
-        @messages = []
-        @your_mission = nil
-      end
-
+    class Logout < Base
       def url
         params['url']
       end
 
       def ticket_granting_ticket_cookie
         cookies['tgt']
-      end
-
-      def client_host
-        env['HTTP_X_FORWARDED_FOR'] || env['REMOTE_HOST'] || env['REMOTE_ADDR']
       end
       
       def login_ticket
@@ -43,7 +27,7 @@ module Castronaut
         
         messages << "You have successfully logged out."
         
-        @your_mission = lambda { controller.erb :logout, :locals => { :presenter => self } }
+        @your_mission = { :template => :logout }
                 
         self
       end

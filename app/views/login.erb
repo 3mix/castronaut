@@ -1,5 +1,5 @@
-<% unless presenter.messages.empty? %>
-  <p class="flash"><%= presenter.messages.to_s %></p>
+<% unless @presenter.messages.empty? %>
+  <p class="flash"><%= @presenter.messages.to_s %></p>
 <% end %>
 
 <div class="form container">
@@ -23,8 +23,8 @@
         <input type="submit" class="button login" value="Login" />
       </div>
       
-      <input type="hidden" name="lt" id="lt" value="<%= presenter.login_ticket %>" />
-      <input type="hidden" name="service" id="service" value="<%= presenter.service %>" />
+      <input type="hidden" name="lt" id="lt" value="<%= @presenter.login_ticket %>" />
+      <input type="hidden" name="service" id="service" value="<%= @presenter.service %>" />
       
     </form>
 

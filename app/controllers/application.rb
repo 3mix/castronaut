@@ -1,36 +1,32 @@
+def presents(klass, template_type=Castronaut.config.template_type)
+  @presenter = klass.new(self)
+  @presenter.represent!
+  if @presenter.your_mission[:redirect]
+    redirect @presenter.your_mission[:redirect], @presenter.your_mission[:status]
+  elsif @presenter.your_mission[:template]
+    send template_type, @presenter.your_mission[:template]
+  end
+end
+
 get '/' do
   redirect '/login'
 end
 
 get '/login' do
   no_cache
-  @presenter = Castronaut::Presenters::Login.new(self)
-  @presenter.represent!
-  @presenter.your_mission.call
+  presents Castronaut::Presenters::Login
 end
 
 post '/login' do
-  @presenter = Castronaut::Presenters::ProcessLogin.new(self)
-  @presenter.represent!
-  @presenter.your_mission.call
-end
-
-get '/logout' do
-  @presenter = Castronaut::Presenters::Logout.new(self)
-  @presenter.represent!
-  @presenter.your_mission.call
+  presents Castronaut::Presenters::ProcessLogin
 end
 
 get '/serviceValidate' do
-  @presenter = Castronaut::Presenters::ServiceValidate.new(self)
-  @presenter.represent!
-  @presenter.your_mission.call
+  presents Castronaut::Presenters::ServiceValidate, :erb
 end
 
 get '/proxyValidate' do
-  @presenter = Castronaut::Presenters::ProxyValidate.new(self)
-  @presenter.represent!
-  @presenter.your_mission.call
+  presents Castronaut::Presenters::ProxyValidate, :erb
 end
 
 private

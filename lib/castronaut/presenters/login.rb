@@ -1,27 +1,7 @@
 module Castronaut
   module Presenters
 
-    class Login
-      attr_reader :controller, :your_mission
-      attr_accessor :messages
-
-      delegate :params, :request, :to => :controller
-      delegate :cookies, :env, :to => :request
-
-      def initialize(controller)
-        @controller = controller
-        @messages = []
-        @your_mission = nil
-      end
-
-      def service
-        params['service']
-      end
-
-      def renewal
-        params['renew']
-      end
-
+    class Login < Base
       def gateway?
         return true if params['gateway'] == 'true'
         return true if params['gateway'] == '1'
@@ -34,10 +14,6 @@ module Castronaut
 
       def redirection_loop?
         params.has_key?('redirection_loop_intercepted')
-      end
-      
-      def client_host
-        env['HTTP_X_FORWARDED_FOR'] || env['REMOTE_HOST'] || env['REMOTE_ADDR']
       end
       
       def login_ticket
@@ -60,7 +36,7 @@ module Castronaut
               service_ticket = Castronaut::Models::ServiceTicket.generate_ticket_for(service, client_host, ticket_granting_ticket_result.ticket)
             
               if service_ticket.service_uri
-                return controller.redirect(service_ticket.service_uri, 303)
+                @your_mission = { :redirect => service_ticket.service_uri, :status => 303 }
               else
                 messages << "The target service your browser supplied appears to be invalid. Please contact your system administrator for help."
               end            
@@ -71,7 +47,7 @@ module Castronaut
           
         end
         
-        @your_mission = lambda { controller.erb :login, :locals => { :presenter => self } }
+        @your_mission = { :template => :login }
                 
         self
       end

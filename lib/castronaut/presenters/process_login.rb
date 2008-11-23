@@ -4,28 +4,11 @@ require 'json/add/rails'
 module Castronaut
   module Presenters
 
-    class ProcessLogin
+    class ProcessLogin < Base
       MissingCredentialsMessage = "Please supply a username and password to login."
 
-      attr_reader :controller, :your_mission, :identifier
-      attr_accessor :messages, :login_ticket
-
-      delegate :params, :request, :to => :controller
-      delegate :cookies, :env, :to => :request
-
-      def initialize(controller)
-        @controller = controller
-        @messages = []
-        @your_mission = nil
-      end
-
-      def service
-        params['service']
-      end
-
-      def renewal
-        params['renew']
-      end
+      attr_reader :identifier
+      attr_accessor :login_ticket
 
       def gateway?
         return true if params['gateway'] == 'true'
@@ -39,10 +22,6 @@ module Castronaut
 
       def redirection_loop?
         params.has_key?('redirection_loop_intercepted')
-      end
-
-      def client_host
-        env['HTTP_X_FORWARDED_FOR'] || env['REMOTE_HOST'] || env['REMOTE_ADDR']
       end
 
       def username
@@ -94,14 +73,14 @@ module Castronaut
         if login_ticket_validation_result.invalid?
           messages << login_ticket_validation_result.message
           @login_ticket = Castronaut::Models::LoginTicket.generate_from(client_host).ticket
-          @your_mission = lambda { controller.erb :login, :locals => { :presenter => self } } # TODO: STATUS 401
+          @your_mission = { :template => :login } # TODO: STATUS 401
           return self
         end
 
         if username.blank? || password.blank?
           messages << MissingCredentialsMessage
           @login_ticket = Castronaut::Models::LoginTicket.generate_from(client_host).ticket
-          @your_mission = lambda { controller.erb :login, :locals => { :presenter => self } } # TODO: STATUS 401
+          @your_mission = { :template => :login } # TODO: STATUS 401
           return self
         end
 
@@ -124,8 +103,7 @@ module Castronaut
             service_ticket = Castronaut::Models::ServiceTicket.generate_ticket_for(service, client_host, ticket_granting_ticket)
 
             if service_ticket && service_ticket.service_uri
-              @your_mission = lambda { controller.redirect(service_ticket.service_uri, 303) }
-              return self
+              @your_mission = { :redirect => service_ticket.service_uri, :status => 303 }
             else
               messages << "The target service your browser supplied appears to be invalid. Please contact your system administrator for help."
             end
@@ -137,7 +115,7 @@ module Castronaut
         end
 
         if messages.any?
-          @your_mission = lambda { controller.erb :login, :locals => { :presenter => self } }
+          @your_mission = { :template => :login }
         end
 
         self

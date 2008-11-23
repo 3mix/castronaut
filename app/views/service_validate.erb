@@ -1,18 +1,18 @@
 <cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>
-<% if presenter.service_ticket_result.valid? %>
+<% if @presenter.service_ticket_result.valid? %>
   <cas:authenticationSuccess>
-    <cas:user><%= presenter.identifier.to_s.to_xs %></cas:user>
-    <% if presenter.proxy_granting_ticket_iou %>
-    <cas:proxyGrantingTicket><%= presenter.proxy_granting_ticket_iou.to_s.to_xs %></cas:proxyGrantingTicket>
+    <cas:user><%= @presenter.identifier.to_s.to_xs %></cas:user>
+    <% if @presenter.proxy_granting_ticket_iou %>
+    <cas:proxyGrantingTicket><%= @presenter.proxy_granting_ticket_iou.to_s.to_xs %></cas:proxyGrantingTicket>
     <% end %>
     
-    <% unless presenter.extra_xml.blank? %>
-      <%= presenter.extra_xml %>
+    <% unless @presenter.extra_xml.blank? %>
+      <%= @presenter.extra_xml %>
     <% end %>
   </cas:authenticationSuccess>
 <% else %>
-  <cas:authenticationFailure code="<%= presenter.service_ticket_result.message_category %>">
-  <%= presenter.service_ticket_result.message %>
+  <cas:authenticationFailure code="<%= @presenter.service_ticket_result.message_category %>">
+  <%= @presenter.service_ticket_result.message %>
   </cas:authenticationFailure>
 <% end %>
 </cas:serviceResponse>
